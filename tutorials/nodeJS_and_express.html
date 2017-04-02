@@ -1,0 +1,100 @@
+<div class="post">
+
+    <h1>NodeJS and Express Tutorial</h1>
+    <h5>The basic tutorial on how to create and setup a nodeJS web server.</h5>
+
+    <div class="postContent">
+        <h3>Introduction</h3>
+        <p>
+            In this short tutorial I will explain how to create a simple web server using the nodeJS platform and the Express library. This is a very useful way of creating a quick and easy web server with minimum hassle and much flexibility. In the tutorial we will explain how to setup the simplest of server using Express. We will also cover the basics of how to server a web page as well as how to send data back from the web page to the server. This tutorial is targeted towards people who have at least minor experience in programming.
+        </p>
+
+        <h3>Requirements</h3>
+        <p>
+            For this project I will assume that you have at least some experience with terminal or the command line. For this particular tutorial all you will really need to know is how to navigate inside your command line or terminal, since the rest is simply entering commands. For this tutorial you will need to have <u>node</u> and <u>npm</u> installed on your computer. You can install node from the official <a href="https://nodejs.org/" target="_blank">website</a> and npm will be installed along with node.
+        </p>
+
+        <h3>Creating the Project</h3>
+        <p>
+            The first step in creating a node project is navigation to an empty folder in your terminal. Once you have done that all you need to do is enter <code>npm init</code> and node will initialize a node project for you. The program will ask you a series of question such as the name of the project or entry point. You can leave most of the values at default, the very important part of this process is the entry point. In this tutorial we will leave it at its default (index.js) but you can name it whatever you like given that you leave the extension as .js. Keep in mind that whenever in this tutorial we refer to index.js, you will need to refer to your custom name if you decided to make it different.
+
+            You will also need to install a module that will ease our job of setting up a server. The module is called Express and you can install it by entering <code>npm install express</code>. Once you have initialized node and npm in your folder you can open up index.js (or what ever it is you named it) in your favourite code editor. I personally prefer to use <a href="https://atom.io" target="_blank">Atom</a> for anything web related, but feel free to use whatever you like. Notepad can do just fine.
+        </p>
+
+        <h3>Setting up Express</h3>
+        <p>
+            Now that we have a project created we need to setup the server it self so that it can receive requests and send data back. The conventional way of doing this is through HTTP servers. This often tends to be very complex, which is why we are going to be using Express.
+
+            We will start off by initializing express in our server. Copy and paste the following code into your index.js file.
+
+<pre>
+let express = require('express');
+let app = express();
+
+let portNum = 3000;
+
+app.listen(portNum, function () {
+    console.log("Started server on localhost:" + portNum);
+});</pre>
+	        What we just did in our code is, we imported the express library into our server under the alias ‘express’ after which we initialized this library into a constant called ‘app’ . The ‘app’ object will be our main point of configuration if we need to change how the server behaves.
+
+            We then tell our ‘app’ object to ‘listen’ on the port number that we’ve declared prior to this. We also give a callback function. A callback function is a function that will be executed whenever the first command is done. In our case, whenever the app has finally started to listen it will call our callback function, which will then print in our terminal, “Started server on localhost:3000”. If you were to now save this file, go back to you terminal and enter <code>node index.js</code>. You will see that node has started your web server and actually printed exactly what we expected.
+
+            However, if you were to open your browser and go to <a href="localhost:3000" target="_blank">localhost:3000</a> you should get something like <code>Cannot GET</code>. This is because our server is not configured to receive any GET requests. we will cover this issue in the next section
+        </p>
+
+        <h3>Serving Web Pages</h3>
+        <p>
+            The HTTP protocol is built on requests. There are a number of different request types such as GET, POST, PUT, etc… The ones that are most often used are GET and POST. GET is used by the client (the browser) to request a page from the web server and POST is used by the client to send data to the server. We can use express to configure our web server to receive both types of these requests.
+
+            You can use the command <code>app.get(path[, callback])</code> to receive GET requests. Similarly you can also use <code>app.post(path[, callback])</code> to receive POST requests. We will look at both of these scenarios, starting with get.
+
+            We will start off by placing the following code snippet just above the ‘listen’ command that we declared earlier
+
+<pre>
+app.get('/', function(req, res) {
+    res.send("This is some example text");
+});</pre>
+
+            What this command just did, is simply told our app to listen for get requests for the path <code>'/'</code> and call our callback function whenever a request like that is received. In our callback function we are given two parameters: <code>req</code> and <code>res</code>, which stands for request and response, respectively. You can use the <code>req</code> object to get any specific details about the request, for example the specific URL or perhaps if there is any data attached to the request. As you would expect, you use the <code>res</code> object to respond to the client, typically by sending the client the appropriate web page. In our case we will simply be sending some text which will be displayed on the screen.
+
+            If you were to now run your server again, and go to <a href="localhost:3000">localhost:3000</a> again, you should see your text appear on the screen.
+
+            If you wanted to send a file, such as an html document, you can do so, by replacing <code>res.send(“This is some example text”);</code> with <code>res.sendFile(__dirname + '/path_to_file';</code> replacing <code>'/path_to_file'</code> with the path to the file from index.js’ current directory. the <code>__dirname</code> is a constant that contains the current absolute path of the server. With these changes in place, your web server should be able to serve the html document or file that you configured it to provide.
+        </p>
+
+        <h3>Receiving Data from the Client</h3>
+        <p>
+            In certain cases you will need to receive data from the client for you to put into a database for example or simply to process and send back. For this a POST request is used, and it can be configured fairly simple, with the following snippet of code:
+
+<pre>
+app.post("/some_post_request", function(req, res) {
+
+});</pre>
+
+            With this snippet in place we are fully ready to receive POST requests. Although we cannot retrieve any data yet. To properly retrieve data we must first install a module called body-parser. Without further ado, switch back to your terminal window and install body-parser by entering <code>npm install body-parser</code>.
+            <div class="well well-sm">
+                <b>Note:</b> Your terminal must be navigated to your project folder before entering this command.
+            </div>
+
+            Once you have installed body-parser we must initialize it. Just like we did with Express, by place <code>let body_parser = require(‘body-parser);</code> just below the ‘app’ initialization.
+
+            To configure body-parser and actually have it working we must also use the following code snippet, which we will place just below what we have entered.
+
+<pre>
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true}));</pre>
+
+            <div class="well well-sm">
+                <b>Note:</b> The app.use() command is used to configure all requests before they are passed down to their appropriate handler, such as the get and post handler. This is most often used for checking authentication, or parsing of certain data (such as the case here with body-parser)
+            </div>
+
+            Now that we have configure body-parser we can access the data that is sent to the server through a POST request, by accessing req.body. req.body will contain a JSON object with the data that has been sent by the client.
+        </p>
+
+        <h3>Conclusion</h3>
+        <p>
+            By now we have covered the very basics of what a web server should do, but with this knowledge should be more than enough for you to b able to build a standard web server. As always, feel free to explore and take your skills even further with tam plating frameworks such as <a href="https://pugjs.org/api/getting-started.html" target="_blank">pug</a> which allow you to build html pages from different snippets or <a href="https://github.com/digitalbazaar/forge#installation" target="_blank">forge</a> for using end-to-end encryption. Feel free to ask me question if you have any concerns or suggestions about any parts of this tutorial. Thank you for reading :)
+        </p>
+    </div>
+</div>

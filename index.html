@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Home</title>
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <!-- jQuery library -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <!-- Latest compiled JavaScript -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <!-- InalGotov.com Styles -->
+        <link rel="stylesheet" type="text/css" href="styles.css">
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    </head>
+    <body>
+        <!-- Screen Container -->
+        <div class="container-fluid">
+            <!-- Mobile Menu -->
+            <div class="menu-top visible-xs">
+                <div>
+                    <div class="title title-top">The Simple Solutions</div>
+                    <button type="button" class="btn btn-primary btn-sm menu-toggle" data-toggle="sidemenu"><span class="glyphicon glyphicon-menu-hamburger" aria-hidden="true"></span></button>
+                </div>
+            </div>
+
+            <!-- Screen Container -->
+            <div class="off-screen">
+                <!-- Desktop Menu -->
+                <div class="menu-container">
+                    <div class="menu-container-inner">
+                        <div class="menu-side">
+                            <div class="title title-side visible-sm visible-md visible-lg">The Simple Solutions</div>
+                            <div class="nav-container">
+                                <a href="#" class="nav-button nav-button-selected" id="home">Home</a> <br>
+                                <a href="#collapseCategories" class="nav-button" data-toggle="collapse" aria-expanded="false" aria-controls="collapseCategories">Tutorials</a> <br>
+                                <div class="collapse" id="collapseCategories">
+                                    <a href="#" class="nav-button nav-button-sm" id="andTutorials">Android</a>
+                                    <a href="#" class="nav-button nav-button-sm" id="nodeTutorials">NodeJS</a>
+                                </div>
+                                <a href="#" class="nav-button" id="projects">Projects</a> <br>
+                                <a href="#" class="nav-button" id="about">About</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Content View -->
+                <div class="content-view">
+                    <div id="post1"></div>
+                    <hr/>
+                    <div id="post2"></div>
+                    <hr/>
+                    <div id="post3"></div>
+                </div>
+
+                <div class="footer-view">
+                    <!-- Some contact info goes here -->
+                </div>
+            </div>
+        </div>
+
+        <script>
+            $(document).ready(function() {
+                loadHome();
+                $('[data-toggle="sidemenu"]').click(function() {
+                    $('.off-screen').toggleClass('active');
+                });
+            });
+
+            $("#home").click(function(event) {
+                $("a").removeClass('nav-button-selected')
+                $("#home").addClass('nav-button-selected')
+                loadHome();
+                $('.off-screen').removeClass('active');
+            });
+
+            $("#andTutorials").click(function(event) {
+                $("a").removeClass('nav-button-selected')
+                $("#andTutorials").addClass('nav-button-selected')
+                $('#post1').load('tutorials/android_parallax/android_parallax.html');
+                $('#post2').load('empty.html');
+                $('.off-screen').removeClass('active');
+            });
+
+            $("#nodeTutorials").click(function(event) {
+                $("a").removeClass('nav-button-selected')
+                $("#nodeTutorials").addClass('nav-button-selected')
+                $('#post1').load('tutorials/nodeJS_and_express.html');
+                $('#post2').load('empty.html');
+                $('.off-screen').removeClass('active');
+            });
+
+            $("#projects").click(function(event) {
+                $("a").removeClass('nav-button-selected')
+                $("#projects").addClass('nav-button-selected')
+                $('#post1').load('projects.html');
+                $('#post2').load('empty.html');
+                $('.off-screen').removeClass('active');
+            });
+
+            $("#about").click(function(event) {
+                $("a").removeClass('nav-button-selected')
+                $("#about").addClass('nav-button-selected')
+                $('#post1').load('about_me.html');
+                $('#post2').load('empty.html');
+                $('.off-screen').removeClass('active');
+            });
+
+            $(".title").click(function(event) {
+                $("a").removeClass('nav-button-selected')
+                $("#home").addClass('nav-button-selected')
+                loadHome();
+                $('.off-screen').removeClass('active');
+            });
+
+            function loadHome() {
+                $('#post1').load('tutorials/nodeJS_and_express.html');
+                $('#post2').load('tutorials/android_parallax/android_parallax.html');
+            }
+        </script>
+    </body>
+</html>

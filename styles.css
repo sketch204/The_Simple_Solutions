@@ -1,0 +1,239 @@
+/*
+    Color Scheme!
+        Background Color: rgba(255, 251, 241, 0.66)
+        Text Main: #595959
+        Text Secndary: #808F85
+        Accent Color: #FFD200
+        Highlight Color: #91C499
+*/
+
+body {
+    background-color: rgba(255, 251, 241, 0.66);
+    color: #595959;
+}
+
+h5 {
+    color: #808F85;
+}
+
+pre {
+    color: #C7264E;
+    background-color: #F9F2F4;
+    border: none;
+}
+
+a, a:hover, a:focus {
+    color: #f17575;
+}
+
+.container-fluid {
+    padding: 0;
+}
+
+a.nav-button:visited {
+    text-decoration: none;
+}
+
+.content-view {
+    margin-left: 260px;
+    -webkit-transition: all .1s ease-out;
+       -moz-transition: all .1s ease-out;
+         -o-transition: all .1s ease-out;
+            transition: all .1s ease-out;
+}
+
+.title {
+    margin-top: 5px;
+    font-size: 18pt;
+    font-weight: bold;
+    color: #f17575;
+}
+
+.title-top {
+    position: fixed;
+    margin-left: 35%;
+}
+
+.title-side {
+    position: relative;
+    float: right;
+    text-align: right;
+    margin-bottom: 10px;
+}
+
+.menu-toggle {
+    position: fixed;
+	margin-top: 9px;
+}
+
+@media screen and (min-width: 1260px) {
+    .content-view {
+        width: 1000px;
+    }
+}
+
+@media screen and (max-width: 767px) {
+    .off-screen {
+        /*position: absolute;*/
+        position: relative;
+        -webkit-transition: all .35s ease-out;
+           -moz-transition: all .35s ease-out;
+             -o-transition: all .35s ease-out;
+                transition: all .35s ease-out;
+        left: 0;
+        padding: 5px;
+    }
+
+    .menu-container {
+        margin-left: -260px !important;
+    }
+
+    .menu-top {
+        margin-top: 0;
+    }
+
+    .off-screen.active {
+        left: 150px;
+    }
+
+    .content-view {
+        margin-left: 0;
+        margin-top: 40px;
+    }
+}
+
+@media screen and (max-width: 402px) {
+	.title {
+		font-size: 12pt;
+	}
+}
+
+.menu-top {
+    position: fixed;
+    width: 100%;
+	height: 43px;
+    background-color: #FFD200;
+    color: #808F85;
+    z-index: 1;
+}
+
+.menu-container {
+	position: fixed;
+	margin-top: -20px;
+    width: 250px;
+	height: auto;
+    padding-bottom: 50px;
+
+    background-color: #f17575;
+    -webkit-clip-path: polygon(0 0, 100% 0, 100% 74%, 0 100%);
+    clip-path: polygon(0 0, 100% 0, 100% 74%, 0 100%);
+}
+
+.menu-container-inner {
+    width: 200px;
+	display: table;
+    height: auto;
+    padding-bottom: 120px;
+	padding-top: 100px;
+    padding-right: 10px;
+
+    background-color: #FFD200;
+    -webkit-clip-path: polygon(0 0, 100% 0, 100% 77%, 0 100%);
+    clip-path: polygon(0 0, 100% 0, 100% 77%, 0 100%);
+}
+
+.menu-side {
+    width: 100px;
+    margin-left: 100px;
+    -webkit-transition: all .1s ease-out;
+       -moz-transition: all .1s ease-out;
+         -o-transition: all .1s ease-out;
+            transition: all .1s ease-out;
+}
+
+.nav-container {
+    position: relative;
+    float: right;
+    text-align: right;
+}
+
+.nav-button {
+    color: #808F85;
+	font-size: 14pt;
+    text-align: right;
+    -webkit-transition: all .2s ease-out;
+       -moz-transition: all .2s ease-out;
+         -o-transition: all .2s ease-out;
+            transition: all .2s ease-out;
+}
+
+.nav-button:hover {
+    color: #9d4a4a;
+    text-decoration: none;
+}
+
+.nav-button-selected {
+    color: #f17575;
+}
+
+.nav-button-sm {
+    font-size: 11pt;
+}
+
+.post {
+    color: #595959;
+}
+
+
+/* Bootstrap Override */
+
+.btn-primary {
+    color: #595959;
+    background-color: rgba(0,0,0,0);
+    border: none;
+}
+
+.btn-primary.focus, .btn-primary:focus {
+    color: #595959;
+    background-color: rgba(0,0,0,0);
+    border: none;
+}
+
+.btn-primary:hover {
+    color: #808F85;
+    background-color: rgba(0,0,0,0);
+    border: none;
+}
+
+.btn-primary.active, .btn-primary:active, .open > .dropdown-toggle.btn-primary {
+    color: #808F85;
+    background-color: rgba(0,0,0,0);
+    border: none;
+}
+
+.btn-primary.active.focus, .btn-primary.active:focus, .btn-primary.active:hover,
+.btn-primary:active.focus, .btn-primary:active:focus, .btn-primary:active:hover,
+.open > .dropdown-toggle.btn-primary.focus, .open > .dropdown-toggle.btn-primary:focus,
+.open > .dropdown-toggle.btn-primary:hover {
+    color: #808F85;
+    background-color: rgba(0,0,0,0);
+    border: none;
+}
+
+.btn-primary.active, .btn-primary:active, .open > .dropdown-toggle.btn-primary {
+    background-image: none
+}
+
+.btn-primary.disabled.focus, .btn-primary.disabled:focus, .btn-primary.disabled:hover,
+.btn-primary[disabled].focus, .btn-primary[disabled]:focus, .btn-primary[disabled]:hover,
+fieldset[disabled] .btn-primary.focus, fieldset[disabled] .btn-primary:focus,
+fieldset[disabled] .btn-primary:hover {
+    color: #808F85;
+    background-color: rgba(0,0,0,0);
+    border: none;
+}
+
+.well {
+    color: #595959;
+    background-color: #f5ebd4;
+}

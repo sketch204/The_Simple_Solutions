@@ -1,0 +1,255 @@
+<div class="post">
+    <!-- Have a default android tag to it, or a segmented type of thing (tabs) -->
+    <h1>Parallax Scrolling Effect</h1>
+    <h5>A tutorial on how to create a Parallax scrolling effect for you android app.</h5>
+
+    <div class="postContent">
+        <h3>Introduction</h3>
+        <p>
+            Recently for one of the projects that I am currently working on, I had the need for parallax scrolling. An example of parallax scrolling is shown below.
+        </p>
+        <img src="tutorials/android_parallax/parallax_example.gif" alt="Parallax Example" class="img-responsive" style="max-width:300px"/>
+        <p>
+            Parallax is a very popular effect, used not only in mobile applications but in many websites as well.
+        </p>
+
+        <p>
+            Today we will be looking at implementing this effect in an standard android Activity, using the default widget provided by the android API, <code>ListView</code>. So let's get started.
+        </p>
+
+        <h3>Requirements</h3>
+        <p>
+            The general requirements for this project are:
+        </p>
+            <ul>
+                <li>Android Studio installed</li>
+                <li>A picture (Any picture will work)</li>
+                <li>Copy pasting skills</li>
+            </ul>
+        <p>
+            For this tutorial I will assume that you already have Android studio installed, and hopefully have some minor experience using it. If not, don't you worry, I did my best to make this tutorial as simple as possible, and I explain what each step does, as we go along.
+        </p>
+
+        <h3>Theory behind the effect</h3>
+        <p>
+            The general theory behind how Parallax scrolling works is you have two views on top of each other. The view on the top is scrollable, like a list or a table. The view on the bottom should be large enough to be scrolled, but cannot be scrolled directly by pulling it with your mouse or finger. When you scroll the top view, the bottom view underneath moves along with the scrolling but at a different speed. It can move either slower or faster depending on how you want to implement this.
+        </p>
+        <p>
+            To create this effect in android we are going to have the following setup. We will have a general view at the top with a list at the bottom. As the list gets scrolled up, the views at the top will also move up with the scroll view but at half the pace. Our scroll view will scroll under the top views, but you can customize that later on.
+        </p>
+        <p>
+            One important thing to note is that for our layout, we must use either a <code>FrameLayout</code> or a <code>RelativeLayout</code> so that our list view is place directly on top of our top views, and not underneath. We will move the list view an appropriate distance down, with a header view that we will add to the list. This will act almost like a spacer between the top of the screen and the list, to accommodate some space for the top views.
+        </p>
+        <p>
+            Here is a diagram that may help you understand the whole setup a bit better.
+        </p>
+        <img src="tutorials/android_parallax/layoutDiagram.png" alt="Layout Diagram" class="img-responsive" style="max-width:320px;"/>
+        <p>
+            As you can see in the digram my top view consist of two views, a tool bar and an image view. The digram also shows that the list view goes right on top of the top views with a spacer above to accommodate for the space that the top views will take on the screen.
+        </p>
+
+        <h3>Setting up the project</h3>
+        <p>
+            For this tutorial we are going to need a blank new "Empty Activity" Android Studio setup, preconfigured for phones and tablets. If you don't yet know how to setup a project or simply want to know how I do it, you can follow <a href="#">this</a> simple tutorial that will guide you through the process. Whenever you are done you can return here to continue.
+        </p>
+
+        <h3>Preparing the Layouts</h3>
+        <p>
+            Once you have your project setup, we will need to modify the layout file of our main activity. In my case it is called <code>activity_main.xml</code>. Keep in mind that your file may be called something different. When you have that file open copy paste the following code into the file.
+
+<!-- XML Layout -->
+<pre>
+&lt;RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:id = "@+id/HSContentView"
+    android:background="@color/background"&gt;
+
+    &lt;android.support.v7.widget.Toolbar
+        style="@style/LyonsToolBar"
+        app:titleTextColor="@color/accent"
+        app:title="@string/HSTitle"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        app:layout_scrollFlags="scroll|enterAlwaysCollapsed|exitUntilCollapsed"
+        android:id="@+id/toolbar"&gt;
+    &lt;/android.support.v7.widget.Toolbar&gt;
+
+    &lt;ImageView
+        android:id="@+id/topViews"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/splash_icon"
+        android:scaleType="fitCenter" /&gt;
+
+    &lt;ListView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/HSList"
+        android:layout_gravity="center_horizontal"
+        android:divider="@color/listDivider"
+        android:dividerHeight="1dp"
+        android:overScrollFooter="@color/background"
+        android:overScrollHeader="@color/background"
+        android:layout_marginTop="1dp" /&gt;
+&lt;/RelativeLayout&gt;</pre>
+
+            What the following section of code does is, it creates a parent <code>RelativeLayout</code> which will contain our whole screen layout. Inside this <code>RelativeLayout</code> we have a <code>Toolbar</code> widget. If you do not know why I have this here, don’t worry. The reason for this is because I have my project setup in a bit of a different manner. If you create a default project then you do not need to worry about this widget and you can remove it.
+        </p>
+        <p>
+            Underneath the <code>Toolbar</code> we have an <code>ImageView</code>. Lastly we have a <code>ListView</code>. If you were to pen this layout in the preview right now, you will notice that the <code>ListView</code> currently covers the entire screen. This is exactly what we want, as the <code>ListView</code> will have a transparent header to accommodate space for the top views. It should also be noted that the <code>ImageView</code> is the view that will be moved at half pace when the <code>ListView</code> is scrolled.
+        </p>
+        <p>
+            The next step is to create the layout for our <code>ListView</code> header. Create a new layout file inside the layout folder. I name this file <code>main_activity_list_header.xml</code>, but once again you can name it whatever you like. Once you have the file created please insert the following code snippet into it.
+
+<!-- Spacer Layout -->
+<pre>
+&lt;?xml version="1.0" encoding="utf-8"?&gt;
+&lt;LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"&gt;
+
+    &lt;Space
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:clickable="false"
+        android:id="@+id/SpacerToolbar"/&gt;
+
+    &lt;Space
+        android:layout_width="match_parent"
+        android:layout_height="296dp"
+        android:clickable="false"
+        android:id="@+id/SpacerTopViews"/&gt;
+&lt;/LinearLayout&gt;</pre>
+
+            What we have just create is a layout for our list header. We declared two <code>Space</code> views. The <code>Space</code> view is most often used for creating gaps in the layout, which is exactly what we want. If you pay attention you will notice that the height of the top <code>Space</code> element matches the height of the <code>Toolbar</code> element that I have declared in my project. Similarly the second <code>Space</code> element is given a fixed height, which matches the height if the <code>ImageView</code> almost perfectly. The reason for this is because we want these <code>Space</code> elements to create a gap just big enough to fit our top views.
+        </p>
+        <p>
+            Keep in mind that you do not need to have an exact measurement of your ImageView. If you want to have some scaleable content such as text or animations instead of an ImageView, you can change the size of the header to properly fit your top view. We will cover how this is implemented in the next section of this tutorial.
+        </p>
+
+        <h3>Configuring the Behaviours</h3>
+        <p>
+            Once you have your layouts setup we can move on to the next step of this tutorial, which is configuring the Java code. The first thing we are going to do is create references to our <code>ListView</code>, our <code>ImageView</code> and the <code>Toolbar</code> in the <code>onCreate</code> method.
+        </p>
+            <div class="well well-sm">
+                <b>Note:</b> For this of you who are not very familiar with the Android platform, <code>onCreate</code> is a method that is called after the activity has been created. If you are familiar with iOS development, this method similar to the <code>viewDidLoad</code> method
+            </div>
+        <p>
+            We will create our reference with <code>listView = (ListView) findViewById(R.id.HSList)</code>. I will assume that you have already declared these variables globally.
+        </p>
+        <p>
+            The next thing we need to do is declare three global variables, the first one being a <code>boolean</code>, called <code>didCalculateSpacer</code>. The second variable should be of type <code>int</code> called <code>lastOffset</code>. Lastly, the third variable is also of type <code>int</code> but this time it is called <code>topViewHeight</code>.
+        </p>
+        <p>
+            Next, we are going to do is attach an <code>OnScrollListener</code> to our list view. What this will allow us to do is find out almost every moment when the list view is scrolled and perform any necessary operations when once that happens. We will perform this by placing the following in our onCreate method. Make sure to put this after you declared your references.
+        </p>
+<!-- OnScrollListener -->
+<pre>
+listView.setOnScrollListener(new AbsListView.OnScrollListener() {
+    @Override
+    public void onScrollStateChanged(AbsListView view, int scrollState) {
+
+    }
+
+    @Override
+    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+        if (didCalculateSpacer) {
+            Log.d("Parallax!!!!!!", "      ");
+            int childTopY = Math.abs(ListView.getChildAt(0).getTop()) + (firstVisibleItem * listView.getChildAt(0).getHeight());
+            if (firstVisibleItem != 0) {
+                childTopY += topViewsHeight + getSupportActionBar().getHeight();
+            }
+            int deltaOffset = lastOffset - childTopY;
+
+            // I know it is a very long condition :( In short its
+            //  (((movingUp)        &amp;&amp; (canStillMoveTopViewsUp)) ||
+            if ((((deltaOffset &lt; 0) &amp;&amp; (Math.abs(toolbar.getY()) &lt; (topViewsHeight + getSupportActionBar().getHeight()))) ||
+            //  ((movingDown)      &amp;&amp; (canStillMoveTopViewsDown))) &amp;&amp;
+                ((deltaOffset &gt; 0) &amp;&amp; (toolbar.getY() + (topViews.getY() - getSupportActionBar().getHeight()) &lt;= 0))) &amp;&amp;
+            //  (listViewHasChildren)
+                (listView.getChildAt(0) != null)) {
+
+                toolbar.setY(-childTopY * 0.5f);
+                topViews.setY((-childTopY * 0.5f) + getSupportActionBar().getHeight());
+            }
+
+            lastOffset = childTopY;
+        }
+
+        if (!didCalculateSpacer &amp;&amp; topViews.getHeight() != 0) {
+            didCalculateSpacer = true;
+            calculateSpacer();
+        }
+    }
+});</pre>
+        <p>
+            To explain what this code snippet does. Inside the <code>OnScrollListener</code> you will find two methods, an <code>onScrollStateChanged</code> method and an <code>onScroll</code> method. The first method is called only when the list view starts and stops scrolling. However the latter method is called multiple times throughout the scrolling, which is why it is the method that we want to use.
+        </p>
+        <p>
+            I will start by explaining the two if statements inside the method. The first if statement will trigger only after we calculated the spacer and what it will do as actually perform the parallax scroll. The second if statement will trigger if the spacer has not been calculated yet but the height of <code>topViews</code> has been calculated by the system. In this case we will precede to flag <code>didCalculateSpacer</code> as true and calculate the spacer, by calling the <code>calculateSpacer</code> method. We will implement this method later.
+        </p>
+        <p>
+            The way that parallax scrolling works is a little bit complex. The first thing we do is calculate the distance by which the ListView is currently scrolled by. This value is stored in the <code>childTopY</code> variable.
+        </p>
+            <div class="well well-sm">
+                <b>Note:</b> If you are wondering why I am multiplying the height of each cell by the <code>firstVisibleItem</code>, that is because <code>listView.getChildAt(0)</code> returns the first <u>visible</u> item, not the actual first item of the list view.
+            </div>
+        <p>
+            Since <code>firstVisibleItem</code> also includes our header, whenever it becomes not 0, that would mean that the distance of our header has been scrolled. But the only way we can actually accommodate for this distance is by manually adding which is exactly what we do in the following if statement.
+        </p>
+<pre>
+if (firstVisibleItem != 0) {
+    childTopY += topViewsHeight + getSupportActionBar().getHeight();
+}</pre>
+        <p>
+            Once we have fully and properly calculated <code>childTopY</code>, we can calculate <code>deltaOffset</code>. Wheres as <code>childTopY</code> represents the total distance that has been scrolled, <code>deltaOffset</code>, represent the scroll distance that has been covered since our last call. We do this by calculating the difference between the last total scrolled distance and the current. With this in mind it can be concluded that if deltaOffset is a positive number, that means the we have just scrolled down. inversely, if it is negative, then we have just scrolled up. We use these properties in the following, very complex, if statement.
+        </p>
+        <p>
+            What the following if statement does is simply determines whether or not it can actually move <code>topViews</code> without going over its bounds. I had to come up with a very complex condition statement for this part to work properly. I have provided comments in the code to explain how it determines whether or not it can move <code>topViews</code> up or down. The statement it self is pretty straight forward once you break it down, the complexity comes from its length.
+        </p>
+        <p>
+            In short, the statement performs a series of calculations to determine whether or not it can still move <code>topViews</code> up or down without going over the bounds. It also checks for the <code>listView</code> to not be empty as that can sometimes cause problems.
+        </p>
+        <p>
+            When the if statement passes, we will move both the <code>toolbar</code> and the <code>topViews</code> by to the distance that has been scrolled by making sure to shorten that distance by half with the <code>0.5f</code> multiplier. We should also make sure to add the height of the toolbar to the ImageView to make sure that it will be positioned properly. Lastly, we should make sure to record the scrolled distance by assigning <code>childTopY</code> to <code>lastOffset</code>, so that we can calculate <code>deltaOffset</code> in future calls.
+        </p>
+        <p>
+            With this in place we have our parallax working but we are not done yet, because we still need to calculate the proper height of the spacer. If the content of your topViews has a fixed height you can skip this step. Just make sure to add the listView adapter <u>after</u> adding the header. If not the feel free to follow along.
+        </p>
+        <p>
+            The final step is to calculate the proper height of the spacer. We do this by creating a new method called calculateSpacer. You can find the fun implementation of this method below.
+        </p>
+<!-- CalculateSpacer() -->
+<pre>
+private void calculateSpacer() {
+    View listHeader = getLayoutInflater().inflate(R.layout.home_activity_list_header, null);
+    View topViewsSpacer = listHeader.findViewById(R.id.SpacerTopViews);
+    ViewGroup.LayoutParams params = topViewsSpacer.getLayoutParams();
+    params.height = topViews.getHeight();
+    topViewsHeight = topViews.getHeight();
+    topViewsSpacer.setLayoutParams(params);
+
+    listHeader.setOnClickListener(null);
+    listHeader.setClickable(false);
+
+    listView.addHeaderView(listHeader, listHeader, false);
+
+    adapter = new ListAdapter(this, announcements, false);
+    listView.setAdapter(adapter);
+
+    loadAnnouncements();
+}</pre>
+        <p>
+            To explain how we calculate the spacer, we start off by “inflating” the layout of the <code>main_activity_list_header</code> layout we created previously. If you named your file differently make sure to change that name to whatever it is you called your layout, otherwise you might have problems.
+        </p>
+        <p>
+            The next thing we do is create a reference to the <code>Space</code> element itself, that is contained within the header view. We do this so the we can alter the height if this view directly. We then proceed to set the height of the spacer to the same height as topViews, by modifying its layout parameters. If you do not know how to work with layout parameters, there are plenty of other guide that can help you figure this out. since this is not the primary focus of this tutorial we wont spend much more time on them. Once you have configured the height of the <code>topViewsSpacer</code>, we then add the header view to our list view, and finish off by configuring the adapter for our ListView. Once again if you do not know how to use a ListView adapter, you can follow <a href="http://abhiandroid.com/ui/arrayadapter-tutorial-example.html">this</a> simple tutorial to help you out.
+        </p>
+        <p>
+            And now that we have all of our components in place, we can run our project and see that our parallax effect working. Thank you very much for following this tutorial, if have any questions, concern or suggestions feel free to let me know.
+        </p>
+    </div>
+</div>
