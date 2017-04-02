@@ -8,6 +8,6 @@ app.get('*', function(req, res) {
     res.sendFile(__dirname + req.path);
 });
 
-app.listen('/', function() {
-    console.log("Server started on port 3000");
+app.listen(80, function() {
+    console.log("Server started on port 80");
 });
